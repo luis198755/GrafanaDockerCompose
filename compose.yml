@@ -1,0 +1,36 @@
+version: "3.8"
+
+networks:
+  grafana:
+
+volumes:
+  app_data: {}
+
+services:
+  grafana:
+    image: grafana/grafana:10.0.3
+    container_name: grafana10
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - grafana
+    environment:
+      - "GF_DEFAULT_APP_MODE=development"
+      - "GF_LOG_LEVEL=debug"
+    volumes:
+      - app_data:/var/lib/grafana
+
+  emqx:
+    user: root
+    image: emqx/emqx:latest
+    container_name: EMQX
+    restart: always
+    ports:
+      - "18083:18083" 
+      - "1883:1883"
+      - "8083:8083"
+    networks:
+      - grafana
+    volumes:
+      - app_data:/opt/emqx/data
